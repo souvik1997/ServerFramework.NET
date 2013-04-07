@@ -64,7 +64,7 @@ static void server_OnMessageReceived(object sender, ClientEventArgs e)
   string msg = Encoding.ASCII.GetString(client.Message);
   if (client == null || client.Message == null) return;
   Console.WriteLine(msg);
-  client.SendData("I heard you! " + Encoding.ASCII.GetString(client.Message) + "\n");
+  client.SendData("I heard you! " + msg + "\n");
 }
 ```
 
