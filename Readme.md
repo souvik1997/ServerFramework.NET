@@ -83,5 +83,5 @@ If this file did not come with this software, the license is also [online at htt
 
 If you use this library, feel free to *Star* this repository!
   
-
+Copyright (c) Souvik Banerjee  2013
     
