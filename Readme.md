@@ -27,10 +27,6 @@ using ServerFramework.NET;
 Instantiate the Server with one of the five constructors:
 
 ```C#
-var server = new Server(int port)
-```
-
-```C#
 var server = new Server(int port, int dataSize)
 ```
 
