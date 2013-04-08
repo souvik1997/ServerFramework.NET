@@ -24,7 +24,7 @@ using ServerFramework.NET;
 
 ## Usage
 
-Instantiate the Server with one of the five constructors:
+Instantiate the Server with one of the four constructors:
 
 ```C#
 var server = new Server(int port, int dataSize)
