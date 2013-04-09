@@ -23,6 +23,7 @@ namespace ServerDemo
             server.OnMessageReceived += server_OnMessageReceived; 
             server.OnTooManyClients += server_OnTooManyClients;
             server.OnClientConnect += server_OnClientConnect;
+            server.OnClientDisconnect += (o, i) => Console.WriteLine("Client disconnected");
             server.OnServerStop += (o, i) => 
             {
                 Console.WriteLine("Server stopped");
@@ -67,7 +68,6 @@ namespace ServerDemo
         {
 
             Client client = e.Client; //Get the Client
-            if (client == null || client.Message == null) return;
             
             string msg = Encoding.ASCII.GetString(client.Message); //Get the message as a string
             string html = File.ReadAllText("index.html"); //Read the HTML file

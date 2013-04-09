@@ -100,7 +100,7 @@ namespace ServerFramework.NET
         #endregion
         #region Events
         /// <summary>
-        /// This event is fired when a message is received
+        /// This event is fired when a message is received. The Client and Message are guaranteed to be not null
         /// </summary>
         public event ClientEventHandler OnMessageReceived;
         /// <summary>
@@ -111,6 +111,10 @@ namespace ServerFramework.NET
         /// This event is fired when a client connects successfully
         /// </summary>
         public event ClientEventHandler OnClientConnect;
+        /// <summary>
+        /// This event is fired when a client connects successfully
+        /// </summary>
+        public event ClientEventHandler OnClientDisconnect;
         /// <summary>
         /// This event is fired when the server stops
         /// </summary>
@@ -209,6 +213,7 @@ namespace ServerFramework.NET
             if (client == null) return;
             client.TcpClient.Close();
             _clients.Remove(client);
+            FireClientDisconnectedEvent(client);
         }
 
         private void ClientAccepted(IAsyncResult iar)
@@ -263,10 +268,11 @@ namespace ServerFramework.NET
             }
             finally
             {
-                FireMessageReceivedEvent(listener);   
-
                 if (listener != null && listener.TcpClient.Connected && listener.TcpClient.GetStream().CanRead)
+                {
+                    if (listener.Message != null) FireMessageReceivedEvent(listener);
                     listener.TcpClient.GetStream().BeginRead(new byte[0], 0, 0, ClientRead, listener);
+                }
             }
 
         }
@@ -282,7 +288,11 @@ namespace ServerFramework.NET
             if (OnClientConnect != null)
                 OnClientConnect(this, new ClientEventArgs {Client = client});
         }
-
+        protected virtual void FireClientDisconnectedEvent(Client client)
+        {
+            if (OnClientDisconnect != null)
+                OnClientDisconnect(this, new ClientEventArgs { Client = client });
+        }
         protected virtual void FireMessageReceivedEvent(Client client)
         {
             if (OnMessageReceived != null)
