@@ -268,9 +268,10 @@ namespace ServerFramework.NET
             }
             finally
             {
-                if (listener != null && listener.TcpClient.Connected && listener.TcpClient.GetStream().CanRead)
+                if (listener != null && listener.Message != null) FireMessageReceivedEvent(listener);
+
+                if (listener != null && listener.TcpClient != null && listener.TcpClient.Connected && listener.TcpClient.GetStream().CanRead)
                 {
-                    if (listener.Message != null) FireMessageReceivedEvent(listener);
                     listener.TcpClient.GetStream().BeginRead(new byte[0], 0, 0, ClientRead, listener);
                 }
             }

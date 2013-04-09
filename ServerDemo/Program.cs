@@ -68,7 +68,7 @@ namespace ServerDemo
         {
 
             Client client = e.Client; //Get the Client
-            
+            Server server = sender as Server;
             string msg = Encoding.ASCII.GetString(client.Message); //Get the message as a string
             string html = File.ReadAllText("index.html"); //Read the HTML file
 
@@ -79,6 +79,7 @@ namespace ServerDemo
                     client.SendData(
                         "HTTP/1.1 200 OK\r\nServer: test-b\r\nContent-Type: text/html\r\nAccept-Ranges: bytes\r\nContent-Length: " +
                         html.Length + "\r\n\r\n" + html);
+                if (server != null) server.CloseConnection(client);
             }
             else client.SendData("I heard you! " + Encoding.ASCII.GetString(client.Message) + "\n"); //If it is not a HTTP connection (e.g. telnet), handle it differently
         }
