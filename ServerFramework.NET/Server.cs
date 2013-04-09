@@ -112,7 +112,7 @@ namespace ServerFramework.NET
         /// </summary>
         public event ClientEventHandler OnClientConnect;
         /// <summary>
-        /// This event is fired when a client disconnect successfully
+        /// This event is fired when a client disconnects successfully
         /// </summary>
         public event ClientEventHandler OnClientDisconnect;
         /// <summary>
