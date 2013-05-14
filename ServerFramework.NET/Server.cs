@@ -170,6 +170,14 @@ namespace ServerFramework.NET
         }
         #endregion
         #region Properties
+
+        /// <summary>
+        /// True if the server is running
+        /// </summary>
+        public bool IsRunning
+        {
+            get { return _server != null;  }
+        }
         /// <summary>
         /// Gets a List of connected clients
         /// </summary>
