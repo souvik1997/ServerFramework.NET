@@ -288,7 +288,7 @@ namespace ServerFramework.NET
 
         private void StartAcceptingClients()
         {
-            if (_server.Server.IsBound)
+            if (_server != null && _server.Server.IsBound)
                 _server.BeginAcceptTcpClient(ClientAccepted, _server);
         }
         #endregion
