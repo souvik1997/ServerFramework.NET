@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading;
 using System.Windows.Forms;
 using System.Text;
 using ServerFramework.NET;

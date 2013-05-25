@@ -226,7 +226,7 @@ namespace ServerFramework.NET
 
         private void ClientAccepted(IAsyncResult iar)
         {
-            if (_server == null) return;
+            if (_server == null || !_server.Server.IsBound) return;
             StartAcceptingClients();
 
             var listener = iar.AsyncState as TcpListener;
@@ -288,7 +288,8 @@ namespace ServerFramework.NET
 
         private void StartAcceptingClients()
         {
-            _server.BeginAcceptTcpClient(ClientAccepted, _server);
+            if (_server.Server.IsBound)
+                _server.BeginAcceptTcpClient(ClientAccepted, _server);
         }
         #endregion
         #region Event firing methods
