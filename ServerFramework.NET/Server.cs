@@ -47,11 +47,15 @@ namespace ServerFramework.NET
             if (data == null) return;
             try
             {
-                if (TcpClient.GetStream().CanWrite)
+                if (TcpClient.Connected && TcpClient.GetStream().CanWrite)
                     TcpClient.GetStream().Write(data, 0, data.Length);
             }
             catch (IOException)
             {
+            }
+            catch (Exception)
+            {
+                
             }
         }
         /// <summary>
@@ -226,25 +230,32 @@ namespace ServerFramework.NET
 
         private void ClientAccepted(IAsyncResult iar)
         {
-            if (_server == null || !_server.Server.IsBound) return;
-            StartAcceptingClients();
-
-            var listener = iar.AsyncState as TcpListener;
-            if (listener == null)
-                return;
-            TcpClient tcpClient = listener.EndAcceptTcpClient(iar);
-
-            var client = new Client {TcpClient = tcpClient};
-            if (_maxNumOfClients >= 0 && _clients.Count >= _maxNumOfClients)
+            try
             {
-                FireTooManyClientsEvent(client);
-                client.TcpClient.Close();
+                if (_server == null || !_server.Server.IsBound) return;
+                StartAcceptingClients();
 
-                return;
+                var listener = iar.AsyncState as TcpListener;
+                if (listener == null)
+                    return;
+                TcpClient tcpClient = listener.EndAcceptTcpClient(iar);
+
+                var client = new Client {TcpClient = tcpClient};
+                if (_maxNumOfClients >= 0 && _clients.Count >= _maxNumOfClients)
+                {
+                    FireTooManyClientsEvent(client);
+                    client.TcpClient.Close();
+
+                    return;
+                }
+                _clients.Add(client);
+                FireClientConnectedEvent(client);
+                client.TcpClient.GetStream().BeginRead(new byte[0], 0, 0, ClientRead, client);
             }
-            _clients.Add(client);
-            FireClientConnectedEvent(client);
-            client.TcpClient.GetStream().BeginRead(new byte[0], 0, 0, ClientRead, client);
+            catch (Exception e)
+            {
+                Stop();
+            }
         }
 
         private void ClientRead(IAsyncResult iar) 
@@ -288,8 +299,15 @@ namespace ServerFramework.NET
 
         private void StartAcceptingClients()
         {
-            if (_server != null && _server.Server.IsBound)
-                _server.BeginAcceptTcpClient(ClientAccepted, _server);
+            try
+            {
+                if (_server != null && _server.Server.IsBound)
+                    _server.BeginAcceptTcpClient(ClientAccepted, _server);
+            }
+            catch (Exception e)
+            {
+                Stop();
+            }
         }
         #endregion
         #region Event firing methods
@@ -350,6 +368,10 @@ namespace ServerFramework.NET
             }
             catch (SocketException)
             {
+            }
+            catch (Exception e)
+            {
+                    
             }
             finally
             {
